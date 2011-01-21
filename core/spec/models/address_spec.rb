@@ -58,4 +58,27 @@ describe Address do
     end
 
   end
+  
+  context 'zipcode not required' do
+    before do
+      Spree::Config.set(:address_requires_zipcode => false)
+      @address = Factory.build(:address, :zipcode => nil)
+      @address.valid?
+    end
+    
+    specify { @address.errors[:zipcode].should be_empty }
+  end
+  
+  context 'zipcode required' do
+    before do
+      Spree::Config.set(:address_requires_zipcode => true)
+      @address = Factory.build(:address, :zipcode => nil)
+      @address.valid?
+    end
+    
+    specify { @address.errors[:zipcode].should include("can't be blank") }
+  end
+
 end
+
+
