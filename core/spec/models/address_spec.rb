@@ -9,6 +9,7 @@ describe Address do
     it { should validate_presence_of(:lastname) }
     it { should validate_presence_of(:address1) }
     it { should validate_presence_of(:city) }
+    it { should validate_presence_of(:zipcode) }
     it { should validate_presence_of(:country) }
     it { should validate_presence_of(:phone) }
   end
@@ -57,4 +58,27 @@ describe Address do
     end
 
   end
+  
+  context 'zipcode not required' do
+    before do
+      Spree::Config.set(:address_requires_zipcode => false)
+      @address = Factory.build(:address, :zipcode => nil)
+      @address.valid?
+    end
+    
+    specify { @address.errors[:zipcode].should be_empty }
+  end
+  
+  context 'zipcode required' do
+    before do
+      Spree::Config.set(:address_requires_zipcode => true)
+      @address = Factory.build(:address, :zipcode => nil)
+      @address.valid?
+    end
+    
+    specify { @address.errors[:zipcode].should include("can't be blank") }
+  end
+
 end
+
+
